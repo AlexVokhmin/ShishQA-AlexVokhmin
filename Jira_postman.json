@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "createmeta",
+			"name": "Createmeta",
 			"event": [
 				{
 					"listen": "test",
@@ -51,7 +51,7 @@
 			"response": []
 		},
 		{
-			"name": "issue",
+			"name": "Create Issue",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -115,7 +115,7 @@
 			"response": []
 		},
 		{
-			"name": "http://89.223.126.182:8080/rest/api/2/issue/10114",
+			"name": "Issue check",
 			"event": [
 				{
 					"listen": "test",
@@ -250,7 +250,7 @@
 			"response": []
 		},
 		{
-			"name": "http://89.223.126.182:8080/rest/api/2/issue/{{check_id}}/transitions",
+			"name": "Update Issue Status",
 			"request": {
 				"method": "POST",
 				"header": [],
