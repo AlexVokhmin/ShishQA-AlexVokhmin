@@ -1,0 +1,410 @@
+{
+	"info": {
+		"_postman_id": "cfd8f7c2-911c-4d06-a2f9-8b586a81f64c",
+		"name": "YouTrack",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Projects INFO",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    jsonDATA = pm.response.json();\r",
+							"    pm.collectionVariables.set(\"proj_ID\", jsonDATA[0].id);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer perm:amFuZS5kb2U=.UkVTVCBBUEk=.wcKuAok8cHmAtzjA6xlc4BrB4hleaX",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1/api/admin/projects?fields=id,name,shortName",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"path": [
+						"api",
+						"admin",
+						"projects"
+					],
+					"query": [
+						{
+							"key": "fields",
+							"value": "id,name,shortName"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New issue",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    jsonDATA = pm.response.json();\r",
+							"    pm.collectionVariables.set(\"issue_ID\", jsonDATA.id);\r",
+							"    \r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let someVal = Math.random();\r",
+							"pm.collectionVariables.set(\"summary\", \"Vokhmin: AT_\" + someVal);\r",
+							"pm.collectionVariables.set(\"description\", \"Description_\"+ someVal);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"project\":{\r\n        \"id\":\"{{proj_ID}}\"\r\n    },\r\n    \"summary\":\"{{summary}}\",\r\n    \"description\":\"{{description}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1/api/issues",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"path": [
+						"api",
+						"issues"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get issue fields",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Summary and description check\", function () {\r",
+							"    jsonDATA = pm.response.json();\r",
+							"    pm.expect(jsonDATA.summary).to.equal( pm.collectionVariables.get(\"summary\"));\r",
+							"    pm.expect(jsonDATA.description).to.equal( pm.collectionVariables.get(\"description\"));\r",
+							"    pm.collectionVariables.set(\"Issue_Status\", jsonDATA.customFields[2].id);\r",
+							"    pm.collectionVariables.set(\"State_Field_Name\", jsonDATA.customFields[2].projectCustomField.field.name);\r",
+							"    pm.collectionVariables.set(\"State_Field_Type\", jsonDATA.customFields[2].$type);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1/api/issues/{{issue_ID}}?fields=$type,id,summary,description,customFields($type,id,projectCustomField($type,id,field($type,id,name)),value($type,avatarUrl,buildLink,color(id),fullName,id,isResolved,localizedName,login,minutes,name,presentation,text))",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"path": [
+						"api",
+						"issues",
+						"{{issue_ID}}"
+					],
+					"query": [
+						{
+							"key": "fields",
+							"value": "$type,id,summary,description,customFields($type,id,projectCustomField($type,id,field($type,id,name)),value($type,avatarUrl,buildLink,color(id),fullName,id,isResolved,localizedName,login,minutes,name,presentation,text))"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get won't fix status id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"\r",
+							"    jsonDATA = pm.response.json();\r",
+							"    pm.collectionVariables.set(\"WNTFix_Id\", jsonDATA.bundle.values[8].id);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1/api/admin/projects/{{proj_ID}}/customFields/{{Issue_Status}}?fields=bundle(values(id,name,$type),aggregatedUsers(id,name,$type))",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"path": [
+						"api",
+						"admin",
+						"projects",
+						"{{proj_ID}}",
+						"customFields",
+						"{{Issue_Status}}"
+					],
+					"query": [
+						{
+							"key": "fields",
+							"value": "bundle(values(id,name,$type),aggregatedUsers(id,name,$type))"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Issue State",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"customFields\": [\r\n        {\"name\":\"{{State_Field_Name}}\",\"$type\":\"{{State_Field_Type}}\",\"id\":\"{{Issue_Status}}\", \"value\": {\"id\":\"{{WNTFix_Id}}\"} }\r\n    ] \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1/api/issues/{{issue_ID}}?fields=customFields(id,name,value(avatarUrl,buildLink,color(id),fullName,id,isResolved,localizedName,login,minutes,name,presentation,text))",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"path": [
+						"api",
+						"issues",
+						"{{issue_ID}}"
+					],
+					"query": [
+						{
+							"key": "fields",
+							"value": "customFields(id,name,value(avatarUrl,buildLink,color(id),fullName,id,isResolved,localizedName,login,minutes,name,presentation,text))"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get issue fields Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Summary and description check\", function () {\r",
+							"    jsonDATA = pm.response.json();\r",
+							"    pm.expect(jsonDATA.summary).to.equal(pm.collectionVariables.get(\"summary\"));\r",
+							"    pm.expect(jsonDATA.description).to.equal(pm.collectionVariables.get(\"description\"));\r",
+							"     pm.expect(jsonDATA.customFields[2].value.id).to.equal( pm.collectionVariables.get(\"WNTFix_Id\"));\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1/api/issues/{{issue_ID}}?fields=$type,id,summary,description,customFields($type,id,projectCustomField($type,id,field($type,id,name)),value($type,avatarUrl,buildLink,color(id),fullName,id,isResolved,localizedName,login,minutes,name,presentation,text))",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"path": [
+						"api",
+						"issues",
+						"{{issue_ID}}"
+					],
+					"query": [
+						{
+							"key": "fields",
+							"value": "$type,id,summary,description,customFields($type,id,projectCustomField($type,id,field($type,id,name)),value($type,avatarUrl,buildLink,color(id),fullName,id,isResolved,localizedName,login,minutes,name,presentation,text))"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "root",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "admin",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "proj_ID",
+			"value": ""
+		},
+		{
+			"key": "issue_ID",
+			"value": ""
+		},
+		{
+			"key": "summary",
+			"value": ""
+		},
+		{
+			"key": "description",
+			"value": ""
+		},
+		{
+			"key": "Issue_Status",
+			"value": ""
+		},
+		{
+			"key": "WNTFix_Id",
+			"value": ""
+		},
+		{
+			"key": "State_Field_Name",
+			"value": ""
+		},
+		{
+			"key": "State_Field_Type",
+			"value": ""
+		}
+	]
+}
