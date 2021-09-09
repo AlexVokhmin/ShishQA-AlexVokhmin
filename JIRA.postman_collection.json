@@ -123,11 +123,8 @@
 						"exec": [
 							"pm.test(\"Summary and description check\", function(){\r",
 							"    jsonData = pm.response.json();\r",
-							"\r",
-							"   \r",
 							"    pm.expect(jsonData.fields.summary).to.equal(pm.collectionVariables.get(\"summary\"));\r",
 							"    pm.expect(jsonData.fields.description).to.equal(pm.collectionVariables.get(\"description\"));\r",
-							"\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
@@ -169,14 +166,6 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Summary and description check\", function(){\r",
-							"    jsonData = pm.response.json();\r",
-							"\r",
-							"   \r",
-							"    pm.expect(jsonData.fields.summary).to.equal(pm.collectionVariables.get(\"summary\"));\r",
-							"    pm.expect(jsonData.fields.description).to.equal(pm.collectionVariables.get(\"description\"));\r",
-							"\r",
-							"});\r",
 							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -212,6 +201,22 @@
 		},
 		{
 			"name": "Get issue status operation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    jsonDATA = pm.response.json();\r",
+							"    pm.collectionVariables.set(\"transitionID\", jsonDATA.transitions[3].id);\r",
+							"    pm.collectionVariables.set(\"transition\", jsonDATA.transitions[3].to.id);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -250,13 +255,26 @@
 			"response": []
 		},
 		{
-			"name": "Update Issue Status",
+			"name": "Update Issue Status DONE Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n\t\"transition\": {\r\n      \"id\": \"21\"\r\n    }\r\n}\r\n",
+					"raw": "{\r\n\t\"transition\": {\r\n      \"id\": \"{{transitionID}}\"\r\n    }\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -280,6 +298,50 @@
 						"issue",
 						"{{check_id}}",
 						"transitions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Status Check Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"DONE status check\", function(){\r",
+							"    jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fields.status.id).to.equal(pm.collectionVariables.get(\"transition\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://89.223.126.182:8080/rest/api/2/issue/{{check_id}}",
+					"protocol": "http",
+					"host": [
+						"89",
+						"223",
+						"126",
+						"182"
+					],
+					"port": "8080",
+					"path": [
+						"rest",
+						"api",
+						"2",
+						"issue",
+						"{{check_id}}"
 					]
 				}
 			},
@@ -340,6 +402,14 @@
 		},
 		{
 			"key": "check_id",
+			"value": ""
+		},
+		{
+			"key": "transitionID",
+			"value": ""
+		},
+		{
+			"key": "transition",
 			"value": ""
 		}
 	]
