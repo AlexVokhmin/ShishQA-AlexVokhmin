@@ -99,7 +99,7 @@ public class Payment extends WebDriverSettings {
         }
 
     }
-    //ТЕСТ НА ПОЯВЛЕНИЕ ПОДСКАЗКИ ПРИ НАВЕДЕНИИ КУРСОРА НА ЗНАК ?
+    //ТЕСТ НА ПОЯВЛЕНИЕ ПОДСКАЗКИ ПРИ НАВЕДЕНИИ КУРСОРА НА ЗНАК "?"
     @Test
     public void testScreenShot() throws IOException {
         driver.get(paymentPage);
@@ -113,6 +113,7 @@ public class Payment extends WebDriverSettings {
         ImageIO.write(screenshot.getImage(), "png", new File("src/test/screenshots/cvv_marksc.png"));
     }
 
+    //РОВЕРКА ПОЛЯ НОМЕРА КАРТЫ
     @Test
     public void cardNumberCheck() {
 
@@ -120,6 +121,7 @@ public class Payment extends WebDriverSettings {
         WebElement actionSubmit = driver.findElement(By.id("action-submit"));
         WebElement labelCN;
         String labelCN_xpath = "//*[@id=\"card-number-field\"]/div/label";
+
 
         String validData = cardInfo[0][0];
 
@@ -135,6 +137,10 @@ public class Payment extends WebDriverSettings {
                 cardInfo[0][0]+1
         };
 
+        //ОТПРАВКА ПУСТОГО ПОЛЯ
+        actionSubmit.click();
+        labelCN = driver.findElement(By.xpath(labelCN_xpath));
+        assertEquals("Card number is required", labelCN.getText());
 
         for (String s: non_validData) {
             inputCardNumber.clear();
@@ -211,6 +217,11 @@ public class Payment extends WebDriverSettings {
                 "TESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTES" //51 СИМВ
         };
 
+        //ОТПРАВКА ПУСТОГО ПОЛЯ
+        actionSubmit.click();
+        labelCH = driver.findElement(By.xpath(labelCH_xpath));
+        assertEquals("Cardholder name is required", labelCH.getText());
+
         for (String s : non_validData) {
             inputCardHolder.clear();
             inputCardHolder.sendKeys(s);
@@ -260,6 +271,7 @@ public class Payment extends WebDriverSettings {
         int y_selector_size = cardExpiresYear.getOptions().size();
 
         String date_label_xpath = "//*[@id=\"card-expires-field\"]/div/label";
+
 
         //ЕСЛИ МЕСЯЦ ИЛИ ГОД НЕ ВЫБРАНЫ
         actionSubmit.click();
@@ -326,6 +338,11 @@ public class Payment extends WebDriverSettings {
         String dataInBounds = "123";
 
         String dataOutOfBounds1 =  "12", dataOutOfBounds2 = "1234";
+
+        //ОТПРАВКА ПУСТОГО ПОЛЯ
+        actionSubmit.click();
+        label_cvv = driver.findElement(By.xpath(label_cvv_xpath));
+        assertEquals("CVV2/CVC2/CAV2 is required", label_cvv.getText());
 
         for (String s : non_validData) {
             inputCardCvc.clear();
