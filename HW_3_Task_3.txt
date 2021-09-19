@@ -23,7 +23,7 @@ where city = "Nantes"
 
 select * 
 from customers
-where city = "Nantes";	
+where city = "Nantes";
 
 6.select O.orderid 
 from orders O
