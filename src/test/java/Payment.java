@@ -295,27 +295,6 @@ public class Payment extends WebDriverSettings {
         cardExpiresYear.selectByValue(Integer.toString(year + 1));
         cardExpiresMonth.selectByValue(Integer.toString(month));
         assertEquals("", date_lebel.getText());
-
-        //ИЗБЫТОЧНОСТЬ БЫТИЯ
-        /*
-        for (int m = 1; m < m_selector_size; m++) {
-            cardExpiresMonth.selectByIndex(m);
-            for (int y = 1; y < y_selector_size; y++) {
-                cardExpiresYear.selectByIndex(y);
-                //ЕСЛИ ДАТА КАРТЫ ПРОШЛА
-                if ((Integer.parseInt(cardExpiresYear.getFirstSelectedOption().getText()) <= year) &&
-                        (Integer.parseInt(cardExpiresMonth.getFirstSelectedOption().getText()) < month)) {
-                    actionSubmit.click();
-                    date_lebel = driver.findElement(By.xpath(date_label_xpath));
-                    assertEquals("Invalid date", date_lebel.getText());
-                } else {
-                    //ПРОВЕРКА НА ОТСУТСТВИЕ ЛЕЙБЛА С ОШИБКОЙ ДАТЫ
-                    assertEquals("", date_lebel.getText());
-                }
-            }
-        }
-
-         */
     }
 
     //ПРОВЕРКА ПОЛЯ CVV
